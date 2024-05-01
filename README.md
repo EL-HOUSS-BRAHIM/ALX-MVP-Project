@@ -46,7 +46,7 @@ Expense Tracker is powered by the following technologies:
 
 To run Expense Tracker locally on your machine, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/expense-tracker.git`
+1. Clone the repository: `git clone https://github.com/EL-HOUSS-BRAHIM/expense-tracker.git`
 2. Navigate to the project directory: `cd expense-tracker`
 3. Install dependencies for the frontend and backend:
    - Frontend: `cd frontend && npm install`
@@ -68,7 +68,7 @@ That's it! You can now access Expense Tracker in your web browser at `http://loc
 
 ## Contributing
 
-Expense Tracker is an ALX MVP project by [Brahim El Houss](https://github.com/your-username). Contributions are welcome! If you'd like to contribute to Expense Tracker, please fork the repository, make your changes, and submit a pull request. Be sure to follow the project's coding conventions and guidelines.
+Expense Tracker is an ALX MVP project by [Brahim El Houss](https://github.com/EL-HOUSS-BRAHIM). Contributions are welcome! If you'd like to contribute to Expense Tracker, please fork the repository, make your changes, and submit a pull request. Be sure to follow the project's coding conventions and guidelines.
 
 ## License
 
