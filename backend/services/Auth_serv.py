@@ -2,8 +2,8 @@
 import bcrypt
 import jwt
 import datetime
-from database import UserDB
-from models.User import UserModel
+from database.User_DataB import *
+from models.User_Mod import *
 
 user_db = UserDB()
 user_model = UserModel()

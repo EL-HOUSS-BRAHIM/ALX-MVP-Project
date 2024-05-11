@@ -1,9 +1,9 @@
-from services import Budget
+from services.Budget_serv import BudgetService
 
 
 class BudgetController:
     def __init__(self):
-        self.service = Budget()
+        self.service = BudgetService()
 
     def set_budget(self, request):
         """

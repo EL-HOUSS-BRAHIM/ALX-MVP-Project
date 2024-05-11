@@ -1,9 +1,9 @@
-from services import Expense
+from services.Expense_serv import ExpenseService
 
 
 class ExpenseController:
     def __init__(self):
-        self.service = Expense()
+        self.service = ExpenseService()
 
     def add_expense(self, request):
         """

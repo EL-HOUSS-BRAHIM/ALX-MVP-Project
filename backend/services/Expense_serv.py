@@ -1,12 +1,12 @@
-from models import Expense
-from database import Expense
+from models.Expense_Mod import ExpenseModel
+from database.Expense_DataB import ExpenseDB
 from middleware import InpuValidat
 
 
 class ExpenseService:
     def __init__(self):
-        self.model = Expense()
-        self.db = Expense()
+        self.model = ExpenseModel()
+        self.db = ExpenseDB()
         self.validator = InpuValidat()
 
     def add_expense(self, user_id, expense_data):

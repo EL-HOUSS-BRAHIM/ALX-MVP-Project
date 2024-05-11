@@ -1,54 +1,14 @@
-from models import User
-from database import User
-from middleware import InpuValidat
+from models.User_Mod import UserModel
+from database.User_DataB import UserDB
+from middleware import InpuValidat, Promise
 
 
-class Promise:
-    def __init__(self, executor):
-        self.callbacks = []
-        self.errbacks = []
-        self.value = None
-        self.error = None
-
-        def resolve(value):
-            self.value = value
-            for callback in self.callbacks:
-                callback(value)
-
-        def reject(error):
-            self.error = error
-            for errback in self.errbacks:
-                errback(error)
-
-        executor(resolve, reject)
-
-    def then(self, callback):
-        if self.value:
-            callback(self.value)
-        else:
-            self.callbacks.append(callback)
-        return self
-
-    def catch(self, errback):
-        if self.error:
-            errback(self.error)
-        else:
-            self.errbacks.append(errback)
-        return self
-
-    @staticmethod
-    def resolve(value):
-        return Promise(lambda resolve, _: resolve(value))
-
-    @staticmethod
-    def reject(error):
-        return Promise(lambda _, reject: reject(error))
 
 
 class UserService:
     def __init__(self):
-        self.model = User()
-        self.db = User()
+        self.model = UserModel()
+        self.db = UserDB()
         self.validator = InpuValidat()
 
     def get_user_profile(self, user_id):

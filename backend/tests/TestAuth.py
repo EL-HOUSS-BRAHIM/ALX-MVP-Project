@@ -1,26 +1,13 @@
 #!/usr/bin/python3
 import unittest
-import sys
-
-
-sys.path.append("d:\\expense-tracker-app\\new\\backend")
-# sys.path.append("D:\expense-tracker-app\new\backend")
-print(sys.path)
-# from services.Auth import AuthService
-from services import (
-    Auth,
-    User,
-    Expense,
-    Budget,
-    Reminder,
-)
+from services import Auth_serv
 from unittest.mock import patch, MagicMock
 from middleware.InpuValidat import InputValidator
 
 
 class TestAuth(unittest.TestCase):
     def setUp(self):
-        self.auth_service = Auth()
+        self.auth_service = Auth_serv()
         self.input_validator = InputValidator()
 
     @patch("services.AuthService.AuthService.create_user")

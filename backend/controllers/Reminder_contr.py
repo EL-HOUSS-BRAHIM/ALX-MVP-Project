@@ -1,9 +1,9 @@
-from services import Reminder
+from services.Reminder_serv import ReminderService
 
 
 class ReminderController:
     def __init__(self):
-        self.service = Reminder()
+        self.service = ReminderService()
 
     def set_reminder(self, request):
         """

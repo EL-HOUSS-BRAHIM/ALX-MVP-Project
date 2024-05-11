@@ -3,6 +3,46 @@ import re
 from datetime import datetime
 from utils.JWT import checkJWTExpiration
 
+class Promise:
+    def __init__(self, executor):
+        self.callbacks = []
+        self.errbacks = []
+        self.value = None
+        self.error = None
+
+        def resolve(value):
+            self.value = value
+            for callback in self.callbacks:
+                callback(value)
+
+        def reject(error):
+            self.error = error
+            for errback in self.errbacks:
+                errback(error)
+
+        executor(resolve, reject)
+
+    def then(self, callback):
+        if self.value:
+            callback(self.value)
+        else:
+            self.callbacks.append(callback)
+        return self
+
+    def catch(self, errback):
+        if self.error:
+            errback(self.error)
+        else:
+            self.errbacks.append(errback)
+        return self
+
+    @staticmethod
+    def resolve(value):
+        return Promise(lambda resolve, _: resolve(value))
+
+    @staticmethod
+    def reject(error):
+        return Promise(lambda _, reject: reject(error))
 
 class InputValidator:
     def validate_user_input(self, user_data):

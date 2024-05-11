@@ -1,9 +1,9 @@
-from services import User
+from services.User_serv import UserService
 
 
 class UserController:
     def __init__(self):
-        self.service = User()
+        self.service = UserService()
 
     def get_user_profile(self, request):
         """
