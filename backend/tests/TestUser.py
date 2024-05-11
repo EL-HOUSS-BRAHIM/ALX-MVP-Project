@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import unittest
 from unittest.mock import patch, MagicMock
-from services.UserService import UserService
-from middleware.InputValidator import InputValidator
+from services.User_serv import UserService
+from middleware.InpuValidat import InputValidator
 
 class TestUser(unittest.TestCase):
     def setUp(self):

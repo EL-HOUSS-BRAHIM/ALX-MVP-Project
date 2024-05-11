@@ -1,13 +1,20 @@
-#!/usr/bin/python3
+import sys
+
+# Convert sys.path to a set to remove duplicates, then convert it back to a list
+unique_sys_path = list(set(sys.path))
+
+# Print the unique entries in sys.path
+for path in unique_sys_path:
+    print(path)
 import unittest
-from services import Auth_serv
+from services.Auth_serv import AuthService
 from unittest.mock import patch, MagicMock
 from middleware.InpuValidat import InputValidator
 
 
 class TestAuth(unittest.TestCase):
     def setUp(self):
-        self.auth_service = Auth_serv()
+        self.auth_service = AuthService()
         self.input_validator = InputValidator()
 
     @patch("services.AuthService.AuthService.create_user")

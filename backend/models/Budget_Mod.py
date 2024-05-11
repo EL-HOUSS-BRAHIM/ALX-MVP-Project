@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from database import Budget
 
 

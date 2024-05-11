@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from services.Reminder_serv import ReminderService
 
 
