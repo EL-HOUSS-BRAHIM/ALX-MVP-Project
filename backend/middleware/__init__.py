@@ -1,2 +1,2 @@
 __all__ = ["InpuValidat"]
-from .InpuValidat import InputValidator
+from .InpuValidat import InputValidator, Promise

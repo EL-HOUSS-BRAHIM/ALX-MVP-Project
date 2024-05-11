@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-from database import Expense
+from database.Expense_DataB import ExpenseDB
 
 
 class ExpenseModel:
     def __init__(self, db_path):
-        self.db = Expense(db_path)
+        self.db = ExpenseDB(db_path)
 
     def _save(self, user_id, expense_data):
         """

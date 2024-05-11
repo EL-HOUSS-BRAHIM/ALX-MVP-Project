@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-from database import Budget
+from database.Budget_DataB import BudgetDB
 
 
 class BudgetModel:
     def __init__(self, db_path):
-        self.db = Budget(db_path)
+        self.db = BudgetDB(db_path)
 
     def _save(self, user_id, budget_data):
         """

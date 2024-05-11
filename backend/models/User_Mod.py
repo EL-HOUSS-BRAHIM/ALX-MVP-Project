@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-from database.User import User
+from database.User_DataB import UserDB
 
-user_db = User()
+user_db = UserDB()
 
 class UserModel:
     def _save(self, email, username, hashed_password):

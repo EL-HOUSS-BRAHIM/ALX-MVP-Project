@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-from database import Reminder
+from database.Reminder_DataB import ReminderDB
 
 
 class ReminderModel:
     def __init__(self, db_path):
-        self.db = Reminder(db_path)
+        self.db = ReminderDB(db_path)
 
     def _save(self, user_id, reminder_data):
         """
