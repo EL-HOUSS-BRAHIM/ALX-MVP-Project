@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import mysql.connector
 from database.connection import get_connection
 
