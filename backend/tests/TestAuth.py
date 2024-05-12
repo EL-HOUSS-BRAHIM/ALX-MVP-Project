@@ -24,7 +24,7 @@ class TestAuth(unittest.TestCase):
         self.auth_service = AuthService()
         self.input_validator = InputValidator()
 
-    @patch("services.AuthService.AuthService.create_user")
+    @patch("services.Auth_serv.AuthService.create_user")
     def test_register_user(self, mock_create_user):
         user_data = {
             "email": "test@example.com",
@@ -41,7 +41,7 @@ class TestAuth(unittest.TestCase):
         self.assertIsNotNone(user)
         self.assertEqual(user["_id"], "1234")
 
-    @patch("services.AuthService.AuthService.authenticate_user")
+    @patch("services.Auth_serv.AuthService.authenticate_user")
     def test_login_user(self, mock_authenticate_user):
         credentials = {"email": "test@example.com", "password": "password123"}
 
@@ -53,7 +53,7 @@ class TestAuth(unittest.TestCase):
         token = self.auth_service.authenticate_user(credentials)
         self.assertEqual(token, "mock_token")
 
-    @patch("services.AuthService.AuthService.logout_user")
+    @patch("services.Auth_serv.AuthService.logout_user")
     def test_logout_user(self, mock_logout_user):
         token = "mock_token"
         mock_logout_user.return_value = None
@@ -61,7 +61,7 @@ class TestAuth(unittest.TestCase):
         self.auth_service.logout_user(token)
         mock_logout_user.assert_called_once_with(token)
 
-    @patch("services.AuthService.AuthService.authenticate_user")
+    @patch("services.Auth_serv.AuthService.authenticate_user")
     def test_authenticate_user(self, mock_authenticate_user):
         credentials = {"email": "test@example.com", "password": "password123"}
 
@@ -70,7 +70,7 @@ class TestAuth(unittest.TestCase):
         token = self.auth_service.authenticate_user(credentials)
         self.assertEqual(token, "mock_token")
 
-    @patch("services.AuthService.AuthService.generateJWT")
+    @patch("services.Auth_serv.AuthService.generateJWT")
     def test_generate_jwt(self, mock_generate_jwt):
         payload = {"user_id": "1234", "email": "test@example.com"}
         mock_generate_jwt.return_value = "mock_token"
@@ -78,7 +78,7 @@ class TestAuth(unittest.TestCase):
         token = self.auth_service.generateJWT(payload, "secret_key")
         self.assertEqual(token, "mock_token")
 
-    @patch("services.AuthService.AuthService.refreshJWT")
+    @patch("services.Auth_serv.AuthService.refreshJWT")
     def test_refresh_jwt(self, mock_refresh_jwt):
         token = "mock_token"
         mock_refresh_jwt.return_value = "new_mock_token"

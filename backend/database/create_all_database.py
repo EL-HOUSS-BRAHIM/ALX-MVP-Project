@@ -14,7 +14,7 @@ unique_sys_path = list(set(sys.path))
 for path in unique_sys_path:
     print(path)
 import mysql.connector
-from database.connection import get_connection
+from ..database.connection import get_connection
 
 def create_database():
     """
