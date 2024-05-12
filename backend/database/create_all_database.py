@@ -1,151 +1,94 @@
-#!/usr/bin/python3
 import mysql.connector
+from database.connection import get_connection
 
-# Connect to MySQL
-conn = mysql.connector.connect(
-    host="localhost",
-    user="root",  # Replace with your MySQL username
-    password="",  # Replace with your MySQL password
-)
-
-# Create a cursor object
-cursor = conn.cursor()
-
-# Create the database if it doesn't exist
-cursor.execute("CREATE DATABASE IF NOT EXISTS project_database")
-
-# Switch to the created database
-cursor.execute("USE project_database")
-
-# Create users table
-cursor.execute(
+def create_database():
     """
-    CREATE TABLE IF NOT EXISTS users (
-        user_id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255),
-        email VARCHAR(255) UNIQUE,
-        hashed_password VARCHAR(255),
-        country VARCHAR(255),
-        currency VARCHAR(50),
-        avatar VARCHAR(255),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-"""
-)
-
-# Create expenses table
-cursor.execute(
+    Create the 'project_database' database if it doesn't exist.
     """
-    CREATE TABLE IF NOT EXISTS expenses (
-        expense_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        amount DECIMAL(10, 2),
-        category VARCHAR(255),
-        currency VARCHAR(50),
-        date DATE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
+    try:
+        db_connection = get_connection()
+        cursor = db_connection.cursor()
+        cursor.execute("CREATE DATABASE IF NOT EXISTS project_database")
+        print("Database created or already exists.")
+    except mysql.connector.Error as error:
+        print(f"Error creating database: {error}")
+    finally:
+        if db_connection.is_connected():
+            cursor.close()
+            db_connection.close()
 
-# Create budgets table
-cursor.execute(
+def create_tables():
     """
-    CREATE TABLE IF NOT EXISTS budgets (
-        budget_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        category VARCHAR(255),
-        amount DECIMAL(10, 2),
-        currency VARCHAR(50),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
-
-# Create reminders table
-cursor.execute(
+    Create the necessary tables in the 'project_database' database.
     """
-    CREATE TABLE IF NOT EXISTS reminders (
-        reminder_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        details TEXT,
-        date DATE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
+    try:
+        db_connection = get_connection()
+        cursor = db_connection.cursor()
 
-# Optional: Create audit_logs table
-cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS audit_logs (
-        log_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        action VARCHAR(255),
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
+        # Create users table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                username VARCHAR(255) NOT NULL,
+                password VARCHAR(255) NOT NULL
+            )
+            """
+        )
 
-# Optional: Create user_settings table
-cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS user_settings (
-        settings_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        notification_preference BOOLEAN,
-        display_preference VARCHAR(50),
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
+        # Create expenses table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS expenses (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                category VARCHAR(255) NOT NULL,
+                amount DECIMAL(10, 2) NOT NULL,
+                description TEXT,
+                date DATE NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+            """
+        )
 
-# Optional: Create notifications table
-cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS notifications (
-        notification_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        message TEXT,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
+        # Create budgets table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS budgets (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                amount DECIMAL(10, 2) NOT NULL,
+                category VARCHAR(255) NOT NULL,
+                start_date DATE NOT NULL,
+                end_date DATE NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+            """
+        )
 
-# Optional: Create tags table
-cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS tags (
-        tag_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        name VARCHAR(255),
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
+        # Create reminders table
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS reminders (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                due_date DATE NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+            """
+        )
 
-# Optional: Create events table
-cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS events (
-        event_id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT,
-        title VARCHAR(255),
-        description TEXT,
-        start_date DATE,
-        end_date DATE,
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
-    )
-"""
-)
+        print("Tables created or already exist.")
+    except mysql.connector.Error as error:
+        print(f"Error creating tables: {error}")
+    finally:
+        if db_connection.is_connected():
+            cursor.close()
+            db_connection.close()
 
-# Commit changes and close connection
-conn.commit()
-conn.close()
-
-print("Database schema created successfully.")
+if __name__ == "__main__":
+    create_database()
+    create_tables()

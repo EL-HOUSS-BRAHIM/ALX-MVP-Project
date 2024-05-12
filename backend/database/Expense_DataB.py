@@ -1,17 +1,11 @@
-#!/usr/bin/python3
 import sqlite3
 from datetime import datetime
-
+from database.connection import get_connection
 
 class ExpenseDB:
-    def __init__(self, db_path):
-        self.db_path = db_path
-        self.conn = sqlite3.connect(db_path, check_same_thread=False)
-        self.cursor = self.conn.cursor()
-        self._create_expenses_table()
-
-    def _create_expenses_table(self):
-        self.cursor.execute(
+    def create_expenses_table(self, db_connection):
+        cursor = db_connection.cursor()
+        cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS expenses (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,90 +16,115 @@ class ExpenseDB:
                 date TEXT NOT NULL,
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )
-        """
+            """
         )
-        self.conn.commit()
+        db_connection.commit()
+        cursor.close()
 
-    def _add_expense(self, user_id, expense_data):
+    def add_expense(self, user_id, expense_data):
         category = expense_data["category"]
         amount = expense_data["amount"]
         description = expense_data.get("description", "")
         date = datetime.now().strftime("%Y-%m-%d")
-
-        self.cursor.execute(
-            """
+        query = """
             INSERT INTO expenses (user_id, category, amount, description, date)
-            VALUES (?, ?, ?, ?, ?)
-        """,
-            (user_id, category, amount, description, date),
-        )
-        self.conn.commit()
-        return self.cursor.lastrowid
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        values = (user_id, category, amount, description, date)
+        try:
+            db_connection = get_connection()
+            cursor = db_connection.cursor()
+            cursor.execute(query, values)
+            db_connection.commit()
+            return cursor.lastrowid
+        except mysql.connector.Error as error:
+            print(f"Error adding expense: {error}")
+            raise
+        finally:
+            if db_connection.is_connected():
+                cursor.close()
+                db_connection.close()
 
-    def _get_expenses(self, user_id):
-        self.cursor.execute(
-            """
+    def get_expenses(self, user_id):
+        query = """
             SELECT id, category, amount, description, date
             FROM expenses
-            WHERE user_id = ?
-        """,
-            (user_id,),
-        )
-        expenses = self.cursor.fetchall()
-        return [
-            {
-                "id": expense[0],
-                "category": expense[1],
-                "amount": expense[2],
-                "description": expense[3],
-                "date": expense[4],
-            }
-            for expense in expenses
-        ]
+            WHERE user_id = %s
+        """
+        try:
+            db_connection = get_connection()
+            cursor = db_connection.cursor()
+            cursor.execute(query, (user_id,))
+            expenses = cursor.fetchall()
+            return [
+                {
+                    "id": expense[0],
+                    "category": expense[1],
+                    "amount": expense[2],
+                    "description": expense[3],
+                    "date": expense[4],
+                }
+                for expense in expenses
+            ]
+        except mysql.connector.Error as error:
+            print(f"Error retrieving expenses: {error}")
+            raise
+        finally:
+            if db_connection.is_connected():
+                cursor.close()
+                db_connection.close()
 
-    def _update_expense(self, user_id, expense_id, updated_data):
+    def update_expense(self, user_id, expense_id, updated_data):
         category = updated_data.get("category")
         amount = updated_data.get("amount")
         description = updated_data.get("description")
-
         update_fields = []
         update_values = []
-
         if category:
-            update_fields.append("category = ?")
+            update_fields.append("category = %s")
             update_values.append(category)
         if amount:
-            update_fields.append("amount = ?")
+            update_fields.append("amount = %s")
             update_values.append(amount)
         if description:
-            update_fields.append("description = ?")
+            update_fields.append("description = %s")
             update_values.append(description)
-
         update_values.append(user_id)
         update_values.append(expense_id)
-
         update_query = """
             UPDATE expenses
             SET {}
-            WHERE user_id = ? AND id = ?
-        """.format(
-            ", ".join(update_fields)
-        )
+            WHERE user_id = %s AND id = %s
+        """.format(", ".join(update_fields))
+        try:
+            db_connection = get_connection()
+            cursor = db_connection.cursor()
+            cursor.execute(update_query, update_values)
+            db_connection.commit()
+            return cursor.rowcount > 0
+        except mysql.connector.Error as error:
+            print(f"Error updating expense: {error}")
+            raise
+        finally:
+            if db_connection.is_connected():
+                cursor.close()
+                db_connection.close()
 
-        self.cursor.execute(update_query, update_values)
-        self.conn.commit()
-        return self.cursor.rowcount > 0
-
-    def _delete_expense(self, user_id, expense_id):
-        self.cursor.execute(
-            """
-            DELETE FROM expenses
-            WHERE user_id = ? AND id = ?
-        """,
-            (user_id, expense_id),
-        )
-        self.conn.commit()
-        return self.cursor.rowcount > 0
-
-    def __del__(self):
-        self.conn.close()
+    def delete_expense(self, user_id, expense_id):
+       query = """
+           DELETE FROM expenses
+           WHERE user_id = %s AND id = %s
+       """
+       try:
+           db_connection = get_connection()
+           cursor = db_connection.cursor()
+           cursor.execute(query, (user_id, expense_id))
+           db_connection.commit()
+           return cursor.rowcount > 0
+       except mysql.connector.Error as error:
+           print(f"Error deleting expense: {error}")
+           raise
+       finally:
+           if db_connection.is_connected():
+               cursor.close()
+               db_connection.close()
