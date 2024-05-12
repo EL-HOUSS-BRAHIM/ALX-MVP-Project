@@ -1,4 +1,21 @@
 #!/usr/bin/python3
+<<<<<<< HEAD
+=======
+import sys
+import os
+
+# Get the absolute path of the parent directory
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# Add the parent directory to sys.path
+sys.path.append(parent_dir)
+# Convert sys.path to a set to remove duplicates, then convert it back to a list
+unique_sys_path = list(set(sys.path))
+
+# Print the unique entries in sys.path
+for path in unique_sys_path:
+    print(path)
+>>>>>>> 184ad24a1b5fc35439057a1068d92e9822d6501f
 import mysql.connector
 from database.connection import get_connection
 
