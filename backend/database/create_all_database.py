@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-<<<<<<< HEAD
-=======
 import sys
 import os
 
@@ -15,7 +13,6 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
->>>>>>> 184ad24a1b5fc35439057a1068d92e9822d6501f
 import mysql.connector
 from database.connection import get_connection
 
