@@ -57,30 +57,17 @@ class Promise:
     @staticmethod
     def reject(error):
         return Promise(lambda _, reject: reject(error))
-
 class InputValidator:
-    def validate_user_input(self, user_data):
-        """
-        Validate user input data such as username, email, password, etc.
-        based on defined rules (e.g., email format, password strength, etc.).
-        """
-        username = user_data.get("username")
-        email = user_data.get("email")
-        password = user_data.get("password")
-
-        if not username or not email or not password:
-            return False, "All fields (username, email, password) are required."
-
-        if len(username) < 4:
-            return False, "Username must be at least 4 characters long."
-
-        if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
-            return False, "Invalid email format."
-
-        if len(password) < 8:
-            return False, "Password must be at least 8 characters long."
-
-        return True, "Valid user input."
+    def validate_user_input(self, credentials):
+        if 'email' not in credentials or 'password' not in credentials:
+            return False, "Missing email or password"
+        if not isinstance(credentials['email'], str) or not isinstance(credentials['password'], str):
+            return False, "Email and password must be strings"
+        if '@' not in credentials['email']:
+            return False, "Invalid email format"
+        if len(credentials['password']) < 8:
+            return False, "Password must be at least 8 characters"
+        return True, "Valid input"
 
     def validate_expense_input(self, expense_data):
         """
