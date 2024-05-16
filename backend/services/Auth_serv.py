@@ -16,7 +16,7 @@ for path in unique_sys_path:
 import bcrypt
 import jwt
 import datetime
-from database.session import get_session
+from database.connection import get_session
 from database.models import User
 
 class AuthService:
