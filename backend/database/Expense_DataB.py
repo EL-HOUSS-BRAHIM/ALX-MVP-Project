@@ -15,7 +15,7 @@ for path in unique_sys_path:
     print(path)
 import sqlite3
 from datetime import datetime
-from database.connection import get_connection
+from database.connection import get_session
 
 class ExpenseDB:
     def create_expenses_table(self, db_connection):
@@ -47,7 +47,7 @@ class ExpenseDB:
         """
         values = (user_id, category, amount, description, date)
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, values)
             db_connection.commit()
@@ -67,7 +67,7 @@ class ExpenseDB:
             WHERE user_id = %s
         """
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, (user_id,))
             expenses = cursor.fetchall()
@@ -112,7 +112,7 @@ class ExpenseDB:
             WHERE user_id = %s AND id = %s
         """.format(", ".join(update_fields))
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(update_query, update_values)
             db_connection.commit()
@@ -131,7 +131,7 @@ class ExpenseDB:
            WHERE user_id = %s AND id = %s
        """
        try:
-           db_connection = get_connection()
+           db_connection = get_session()
            cursor = db_connection.cursor()
            cursor.execute(query, (user_id, expense_id))
            db_connection.commit()

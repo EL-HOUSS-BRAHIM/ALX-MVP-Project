@@ -14,7 +14,7 @@ unique_sys_path = list(set(sys.path))
 for path in unique_sys_path:
     print(path)
 import mysql.connector
-from database.connection import get_connection
+from database.connection import get_session
 
 class UserDB:
     def create_user(self, user_data):
@@ -22,7 +22,7 @@ class UserDB:
         query = "INSERT INTO users (email, username, password) VALUES (%s, %s, %s)"
         values = (user_data["email"], user_data["username"], user_data["password"])
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, values)
             db_connection.commit()
@@ -40,7 +40,7 @@ class UserDB:
         """Get a user from the database by email."""
         query = "SELECT * FROM users WHERE email = %s"
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor(dictionary=True)
             cursor.execute(query, (email,))
             user = cursor.fetchone()
@@ -60,7 +60,7 @@ class UserDB:
         query = f"UPDATE users SET {set_clause} WHERE id = %s"
         values += (user_id,)
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, values)
             db_connection.commit()
@@ -77,7 +77,7 @@ class UserDB:
         """Delete a user from the database."""
         query = "DELETE FROM users WHERE id = %s"
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, (user_id,))
             db_connection.commit()

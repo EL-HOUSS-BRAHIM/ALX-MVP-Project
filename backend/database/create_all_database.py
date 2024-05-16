@@ -14,14 +14,14 @@ unique_sys_path = list(set(sys.path))
 for path in unique_sys_path:
     print(path)
 import mysql.connector
-from ..database.connection import get_connection
+from ..database.connection import get_session
 
 def create_database():
     """
     Create the 'project_database' database if it doesn't exist.
     """
     try:
-        db_connection = get_connection()
+        db_connection = get_session()
         cursor = db_connection.cursor()
         cursor.execute("CREATE DATABASE IF NOT EXISTS project_database")
         print("Database created or already exists.")
@@ -37,7 +37,7 @@ def create_tables():
     Create the necessary tables in the 'project_database' database.
     """
     try:
-        db_connection = get_connection()
+        db_connection = get_session()
         cursor = db_connection.cursor()
 
         # Create users table

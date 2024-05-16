@@ -14,7 +14,7 @@ unique_sys_path = list(set(sys.path))
 for path in unique_sys_path:
     print(path)
 import sqlite3
-from database.connection import get_connection
+from database.connection import get_session
 
 class ReminderDB:
     def create_reminders_table(self, db_connection):
@@ -44,7 +44,7 @@ class ReminderDB:
         """
         values = (user_id, title, description, due_date)
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, values)
             db_connection.commit()
@@ -64,7 +64,7 @@ class ReminderDB:
             WHERE user_id = %s
         """
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, (user_id,))
             reminders = cursor.fetchall()
@@ -91,7 +91,7 @@ class ReminderDB:
            WHERE user_id = %s AND id = %s
        """
        try:
-           db_connection = get_connection()
+           db_connection = get_session()
            cursor = db_connection.cursor()
            cursor.execute(query, (user_id, reminder_id))
            db_connection.commit()

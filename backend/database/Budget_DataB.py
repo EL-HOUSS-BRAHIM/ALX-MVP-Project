@@ -14,7 +14,7 @@ unique_sys_path = list(set(sys.path))
 for path in unique_sys_path:
     print(path)
 import sqlite3
-from database.connection import get_connection
+from database.connection import get_session
 
 class BudgetDB:
     def create_budgets_table(self, db_connection):
@@ -46,7 +46,7 @@ class BudgetDB:
         """
         values = (user_id, amount, category, start_date, end_date)
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, values)
             db_connection.commit()
@@ -66,7 +66,7 @@ class BudgetDB:
             WHERE user_id = %s
         """
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, (user_id,))
             budget = cursor.fetchone()
@@ -112,7 +112,7 @@ class BudgetDB:
             WHERE user_id = %s
         """.format(", ".join(update_fields))
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(update_query, update_values)
             db_connection.commit()
@@ -131,7 +131,7 @@ class BudgetDB:
             WHERE user_id = %s
         """
         try:
-            db_connection = get_connection()
+            db_connection = get_session()
             cursor = db_connection.cursor()
             cursor.execute(query, (user_id,))
             db_connection.commit()
