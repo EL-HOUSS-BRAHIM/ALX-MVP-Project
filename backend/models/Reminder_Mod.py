@@ -13,36 +13,32 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.Reminder_DataB import ReminderDB
-
+from database.models import Reminder
 
 class ReminderModel:
-    def __init__(self, db_path):
-        self.db = ReminderDB(db_path)
+    def __init__(self, session):
+        self.session = session
 
     def _save(self, user_id, reminder_data):
-        """
-        Save a new reminder to the database.
+        user = self.session.query(User).filter_by(id=user_id).first()
+        if not user:
+            return False
 
-        Args:
-            user_id (str): The ID of the user.
-            reminder_data (dict): The reminder data.
-
-        Returns:
-            str: The ID of the newly created reminder.
-        """
-        reminder_id = self.db._set_reminder(user_id, reminder_data)
-        return str(reminder_id)
+        reminder = Reminder(
+            user=user,
+            title=reminder_data["title"],
+            description=reminder_data.get("description"),
+            due_date=reminder_data["due_date"],
+        )
+        self.session.add(reminder)
+        self.session.commit()
+        return True
 
     def _delete(self, user_id, reminder_id):
-        """
-        Delete a reminder from the database.
+        reminder = self.session.query(Reminder).filter_by(id=reminder_id, user_id=user_id).first()
+        if not reminder:
+            return False
 
-        Args:
-            user_id (str): The ID of the user.
-            reminder_id (str): The ID of the reminder.
-
-        Returns:
-            bool: True if the reminder was deleted successfully, False otherwise.
-        """
-        return self.db._delete_reminder(user_id, reminder_id)
+        self.session.delete(reminder)
+        self.session.commit()
+        return True

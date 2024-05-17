@@ -13,50 +13,43 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.Expense_DataB import ExpenseDB
-
+from database.models import Expense
 
 class ExpenseModel:
-    def __init__(self, db_path):
-        self.db = ExpenseDB(db_path)
+    def __init__(self, session):
+        self.session = session
 
     def _save(self, user_id, expense_data):
-        """
-        Save a new expense to the database.
+        user = self.session.query(User).filter_by(id=user_id).first()
+        if not user:
+            return False
 
-        Args:
-            user_id (str): The ID of the user.
-            expense_data (dict): The expense data.
-
-        Returns:
-            str: The ID of the newly created expense.
-        """
-        expense_id = self.db._add_expense(user_id, expense_data)
-        return str(expense_id)
+        expense = Expense(
+            user=user,
+            category=expense_data["category"],
+            amount=expense_data["amount"],
+            description=expense_data.get("description"),
+        )
+        self.session.add(expense)
+        self.session.commit()
+        return True
 
     def _delete(self, user_id, expense_id):
-        """
-        Delete an expense from the database.
+        expense = self.session.query(Expense).filter_by(id=expense_id, user_id=user_id).first()
+        if not expense:
+            return False
 
-        Args:
-            user_id (str): The ID of the user.
-            expense_id (str): The ID of the expense.
-
-        Returns:
-            bool: True if the expense was deleted successfully, False otherwise.
-        """
-        return self.db._delete_expense(user_id, expense_id)
+        self.session.delete(expense)
+        self.session.commit()
+        return True
 
     def _update_details(self, user_id, expense_id, updated_data):
-        """
-        Update the details of an existing expense.
+        expense = self.session.query(Expense).filter_by(id=expense_id, user_id=user_id).first()
+        if not expense:
+            return False
 
-        Args:
-            user_id (str): The ID of the user.
-            expense_id (str): The ID of the expense.
-            updated_data (dict): The updated expense data.
-
-        Returns:
-            bool: True if the expense was updated successfully, False otherwise.
-        """
-        return self.db._update_expense(user_id, expense_id, updated_data)
+        expense.category = updated_data["category"]
+        expense.amount = updated_data["amount"]
+        expense.description = updated_data.get("description")
+        self.session.commit()
+        return True

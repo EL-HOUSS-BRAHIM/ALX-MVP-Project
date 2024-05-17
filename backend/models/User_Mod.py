@@ -13,33 +13,40 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.User_DataB import UserDB
-
-user_db = UserDB()
+from database.models import User
 
 class UserModel:
-    def _save(self, email, username, hashed_password):
-        """
-        Save a new user to the database.
-        """
-        user_data = {
-            'email': email,
-            'username': username,
-            'password': hashed_password
-        }
-        user = user_db._create_user(user_data)
-        return user
+    def __init__(self, session):
+        self.session = session
+
+    def _save(self, user_data):
+        email = user_data.get("email")
+        username = user_data.get("username")
+        password = user_data.get("password")
+
+        existing_user = self.session.query(User).filter_by(email=email).first()
+        if existing_user:
+            return False
+
+        new_user = User(email=email, username=username, password=password)
+        self.session.add(new_user)
+        self.session.commit()
+        return True
 
     def _delete(self, user_id):
-        """
-        Delete a user from the database.
-        """
-        result = user_db._delete_user(user_id)
-        return result
+        user = self.session.query(User).filter_by(id=user_id).first()
+        if not user:
+            return False
+
+        self.session.delete(user)
+        self.session.commit()
+        return True
 
     def _update_profile(self, user_id, updated_data):
-        """
-        Update user profile details in the database.
-        """
-        result = user_db._update_user_profile(user_id, updated_data)
-        return result
+        user = self.session.query(User).filter_by(id=user_id).first()
+        if not user:
+            return False
+
+        user.username = updated_data.get("username", user.username)
+        self.session.commit()
+        return True
