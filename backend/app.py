@@ -1,30 +1,42 @@
-#!/usr/bin/python3
-import sys
-import os
-
-# Get the absolute path of the parent directory
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
-# Add the parent directory to sys.path
-sys.path.append(parent_dir)
-# Convert sys.path to a set to remove duplicates, then convert it back to a list
-unique_sys_path = list(set(sys.path))
-
-# Print the unique entries in sys.path
-for path in unique_sys_path:
-    print(path)
-from flask import Flask
-from database.connection import get_session
-from controllers import AuthController, UserController, ExpenseController, BudgetController, ReminderController
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import json
 
 app = Flask(__name__)
+CORS(app)
 
-# Register controllers
-AuthController.register_routes(app)
-UserController.register_routes(app)
-ExpenseController.register_routes(app)
-BudgetController.register_routes(app)
-ReminderController.register_routes(app)
+# Load your controllers and other modules here
+from controllers import Auth_contr, Budget_contr, Expense_contr, Reminder_contr, User_contr
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# Define your API routes
+@app.route('/api/v1/auth', methods=['POST'])
+def auth():
+    # Handle authentication requests
+    return Auth_contr.handle_auth(request.json)
+
+@app.route('/api/v1/users', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def users():
+    if request.method == 'GET':
+        return User_contr.get_users()
+    elif request.method == 'POST':
+        return User_contr.create_user(request.json)
+    elif request.method == 'PUT':
+        return User_contr.update_user(request.json)
+    elif request.method == 'DELETE':
+        return User_contr.delete_user(request.json)
+
+@app.route('/api/v1/budgets', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def budgets():
+    if request.method == 'GET':
+        return Budget_contr.get_budgets()
+    elif request.method == 'POST':
+        return Budget_contr.create_budget(request.json)
+    elif request.method == 'PUT':
+        return Budget_contr.update_budget(request.json)
+    elif request.method == 'DELETE':
+        return Budget_contr.delete_budget(request.json)
+
+# Define routes for expenses and reminders in a similar way
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)
