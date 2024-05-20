@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { getExpenses, createExpense, updateExpense, deleteExpense } from '../services/expense.service';
+import React, { useEffect, useState } from "react";
+import {
+  getExpenses,
+  createExpense,
+  updateExpense,
+  deleteExpense,
+} from "../services/expense.service";
 
 const ExpenseTracker = () => {
   const [expenses, setExpenses] = useState([]);
-  const [newExpenseName, setNewExpenseName] = useState('');
+  const [newExpenseName, setNewExpenseName] = useState("");
   const [newExpenseAmount, setNewExpenseAmount] = useState(0);
 
   useEffect(() => {
@@ -15,18 +20,18 @@ const ExpenseTracker = () => {
       const expensesData = await getExpenses();
       setExpenses(expensesData);
     } catch (error) {
-      console.error('Error fetching expenses:', error);
+      console.error("Error fetching expenses:", error);
     }
   };
 
   const handleCreateExpense = async () => {
     try {
       await createExpense(newExpenseName, newExpenseAmount);
-      setNewExpenseName('');
+      setNewExpenseName("");
       setNewExpenseAmount(0);
       fetchExpenses();
     } catch (error) {
-      console.error('Error creating expense:', error);
+      console.error("Error creating expense:", error);
     }
   };
 
@@ -35,7 +40,7 @@ const ExpenseTracker = () => {
       await updateExpense(expenseId, updates);
       fetchExpenses();
     } catch (error) {
-      console.error('Error updating expense:', error);
+      console.error("Error updating expense:", error);
     }
   };
 
@@ -44,13 +49,12 @@ const ExpenseTracker = () => {
       await deleteExpense(expenseId);
       fetchExpenses();
     } catch (error) {
-      console.error('Error deleting expense:', error);
+      console.error("Error deleting expense:", error);
     }
   };
 
   return (
     <div>
-      <h2>Expenses</h2>
       <ul>
         {expenses.map((expense) => (
           <li key={expense.id}>

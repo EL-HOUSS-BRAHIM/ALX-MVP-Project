@@ -1,31 +1,19 @@
-import React, { useState } from 'react';
-import AuthForm from '../components/AuthForm';
-import { loginUser } from '../services/auth.service';
+import { Helmet } from "react-helmet";
+import AuthForm from "../components/AuthForm";
+import "../styles/auth.css";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = async () => {
-    try {
-      await loginUser({ email, password });
-      // Redirect to the appropriate page after successful login
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
-  };
-
   return (
-    <div>
+    <div className="auth-container">
+      <Helmet>
+        <title>Budget Management App - Login</title>
+        <meta
+          name="description"
+          content="Log in to your Budget Management App account."
+        />
+      </Helmet>
       <h1>Login</h1>
-      <AuthForm
-        email={email}
-        setEmail={setEmail}
-        password={password}
-        setPassword={setPassword}
-        handleSubmit={handleLogin}
-        submitText="Login"
-      />
+      <AuthForm isLogin={true} />
     </div>
   );
 };

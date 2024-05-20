@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { authenticate } from '../services/auth.service';
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { authenticate } from "../services/auth.service";
 
 const AuthForm = ({ isLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const history = useHistory();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await authenticate(email, password, isLogin);
-      history.push('/'); // Redirect to home page on successful authentication
+      history.push("/"); // Redirect to home page on successful authentication
     } catch (error) {
-      console.error('Authentication error:', error);
+      console.error("Authentication error:", error);
       // Display error message
     }
   };
@@ -32,7 +32,7 @@ const AuthForm = ({ isLogin }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
+      <button type="submit">{isLogin ? "Login" : "Register"}</button>
     </form>
   );
 };

@@ -1,17 +1,21 @@
-import React from 'react';
-import AddExpense from '../components/ExpenseTracker/AddExpense';
-import ExpenseList from '../components/ExpenseTracker/ExpenseList';
-import ExpenseChart from '../components/ExpenseTracker/ExpenseChart';
+import { Helmet } from "react-helmet";
+import ExpenseTracker from "../components/ExpenseTracker";
+import "../styles/expenses.css";
 
-const ExpenseTracker = () => {
+const ExpenseTrackerPage = () => {
   return (
-    <div>
+    <div className="expense-container">
+      <Helmet>
+        <title>Budget Management App - Expense Tracker</title>
+        <meta
+          name="description"
+          content="Track your expenses and categorize them for better financial management."
+        />
+      </Helmet>
       <h1>Expense Tracker</h1>
-      <AddExpense />
-      <ExpenseList />
-      <ExpenseChart />
+      <ExpenseTracker />
     </div>
   );
 };
 
-export default ExpenseTracker;
+export default ExpenseTrackerPage;

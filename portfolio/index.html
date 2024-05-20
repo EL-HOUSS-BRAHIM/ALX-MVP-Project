@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brahim El Houss - Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h1>Brahim El Houss</h1>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="hero">
+        <h2>Software Engineer</h2>
+        <p>Innovative problem solver passionate about building impactful software solutions.</p>
+    </div>
+    <main>
+        <section id="about">
+            <h2>About Me</h2>
+            <p>Hello! I'm Brahim El Houss, a dedicated software engineer with a strong academic background in physics
+                and a relentless drive to learn and innovate in the field of technology. My journey began with a
+                fascination for the laws that govern the universe, leading me to study physics intensively. This
+                curiosity naturally transitioned into a passion for software engineering, where I found the perfect
+                blend of creativity and analytical thinking.</p>
+            <p>I am currently furthering my education in software engineering, delving into the complexities of
+                programming languages, data structures, and algorithms. My mission is to leverage my skills to develop
+                solutions that not only meet current technological standards but also push the boundaries of what's
+                possible.</p>
+            <p>When I'm not coding, you can find me exploring the latest advancements in technology, contributing to
+                open-source projects, or learning new languages to expand my cultural horizons. I believe in the power
+                of continuous learning and the importance of staying adaptable in this ever-evolving industry.</p>
+        </section>
+        <section id="skills">
+            <h2>Skills</h2>
+            <ul class="skills-list">
+                <li><i class="fas fa-code"></i> Programming Languages: C, Python, JavaScript, TypeScript</li>
+                <li><i class="fas fa-laptop-code"></i> Web Development: HTML, CSS, JavaScript (ES6), React</li>
+                <li><i class="fas fa-database"></i> Databases: MySQL, MongoDB</li>
+                <li><i class="fas fa-server"></i> Tools: Git, Docker, RESTful API, GraphQL API</li>
+                <li><i class="fas fa-shield-alt"></i> Security: SSH, SSL, Firewalls</li>
+                <li><i class="fas fa-network-wired"></i> Networking: Load Balancer, Web Server (Nginx, Apache)</li>
+                <li><i class="fas fa-project-diagram"></i> Additional Skills: Bash, Unix, Regex, Algorithms, Async
+                    Programming, Unit Testing, Authentication, Internationalization (i18n)</li>
+                <li><i class="fas fa-language"></i> Languages: Arabic, French, English</li>
+            </ul>
+        </section>
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="project-cards">
+                <div class="card">
+                    <img src="https://source.unsplash.com/600x400/?code" alt="Project Image">
+                    <h3>Shell Navigation</h3>
+                    <p>Developed a deep understanding of shell navigation and command-line efficiency, enhancing
+                        productivity in Unix-based environments.</p>
+                </div>
+                <div class="card">
+                    <img src="https://source.unsplash.com/600x400/?git" alt="Project Image">
+                    <h3>Git Version Control</h3>
+                    <p>Utilized Git for version control in multiple projects, ensuring robust code management and
+                        collaboration with team members.</p>
+                </div>
+                <div class="card">
+                    <img src="https://source.unsplash.com/600x400/?docker" alt="Project Image">
+                    <h3>Professional Technologies</h3>
+                    <p>Explored various professional technologies including Docker and continuous integration tools to
+                        streamline development and deployment processes.</p>
+                </div>
+                <div class="card">
+                    <img src="https://source.unsplash.com/600x400/?portfolio" alt="Project Image">
+                    <h3>Personal Portfolio Website</h3>
+                    <p>Designed and developed this personal portfolio website to showcase my projects, skills, and
+                        experience, utilizing modern web development practices.</p>
+                </div>
+                <div class="card">
+                    <img src="https://source.unsplash.com/600x400/?finance" alt="Project Image">
+                    <h3>Personal Portfolio Website</h3>
+                    <p>Designed and developed this personal portfolio website to showcase my projects, skills, and
+                        experience, utilizing modern web development practices.</p>
+                </div>
+            </div>
+        </section>
+        <section id="contact">
+            <h2>Contact Me</h2>
+            <form>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="4" required></textarea>
+
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+    <!-- Add these script tags at the bottom of your HTML body -->
+    <!-- Add these script tags at the bottom of your HTML body -->
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script>
+        const form = document.querySelector('form');
+        const emailService = 'gmail'; // Your email service provider
+        const emailAddress = 'elhoussbr1@gmail.com'; // Your email address
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            const name = form.elements.name.value;
+            const email = form.elements.email.value;
+            const message = form.elements.message.value;
+
+            Email.send({
+                SecureToken: '343276a4-176f-412d-b597-3219f24fd2af', // Your SMTP API key
+                To: emailAddress,
+                From: emailAddress,
+                Subject: `New message from ${name}`,
+                Body: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+            }).then(
+                message => {
+                    alert('Message sent successfully!');
+                    form.reset(); // Reset the form fields
+                }
+            ).catch(
+                error => {
+                    alert('Failed to send message. Please try again.');
+                    console.error('Error sending email:', error);
+                }
+            );
+        });
+    </script>
+    <footer>
+        <p>&copy; 2024 Brahim El Houss. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
