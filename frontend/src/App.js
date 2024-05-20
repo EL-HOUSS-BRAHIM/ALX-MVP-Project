@@ -25,7 +25,6 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="contact" element={<Contact />} />
-          <Route path="about" element={<About />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>

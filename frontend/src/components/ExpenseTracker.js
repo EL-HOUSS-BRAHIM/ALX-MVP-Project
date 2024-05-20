@@ -1,86 +1,110 @@
-import React, { useEffect, useState } from "react";
-import {
-  getExpenses,
-  createExpense,
-  updateExpense,
-  deleteExpense,
-} from "../services/expense.service";
+import React, { useState, useEffect } from 'react';
+import { addExpense, deleteExpense, getExpenses, updateExpense } from '../services/expense.service';
 
 const ExpenseTracker = () => {
   const [expenses, setExpenses] = useState([]);
-  const [newExpenseName, setNewExpenseName] = useState("");
-  const [newExpenseAmount, setNewExpenseAmount] = useState(0);
+  const [newExpense, setNewExpense] = useState({
+    name: '',
+    amount: 0,
+    category: '',
+  });
 
   useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const expenseData = await getExpenses();
+        setExpenses(expenseData);
+      } catch (error) {
+        console.error('Error fetching expenses:', error);
+      }
+    };
+
     fetchExpenses();
   }, []);
 
-  const fetchExpenses = async () => {
+  const handleCreateExpense = async (e) => {
+    e.preventDefault();
     try {
-      const expensesData = await getExpenses();
-      setExpenses(expensesData);
+      await addExpense(newExpense);
+      setNewExpense({ name: '', amount: 0, category: '' });
+      // Handle successful expense creation
     } catch (error) {
-      console.error("Error fetching expenses:", error);
-    }
-  };
-
-  const handleCreateExpense = async () => {
-    try {
-      await createExpense(newExpenseName, newExpenseAmount);
-      setNewExpenseName("");
-      setNewExpenseAmount(0);
-      fetchExpenses();
-    } catch (error) {
-      console.error("Error creating expense:", error);
-    }
-  };
-
-  const handleUpdateExpense = async (expenseId, updates) => {
-    try {
-      await updateExpense(expenseId, updates);
-      fetchExpenses();
-    } catch (error) {
-      console.error("Error updating expense:", error);
+      console.error('Error creating expense:', error);
+      // Handle error
     }
   };
 
   const handleDeleteExpense = async (expenseId) => {
     try {
       await deleteExpense(expenseId);
-      fetchExpenses();
+      const updatedExpenses = expenses.filter((expense) => expense.id !== expenseId);
+      setExpenses(updatedExpenses);
+      // Handle successful expense deletion
     } catch (error) {
-      console.error("Error deleting expense:", error);
+      console.error('Error deleting expense:', error);
+      // Handle error
+    }
+  };
+
+  const handleUpdateExpense = async (updatedExpense) => {
+    try {
+      await updateExpense(updatedExpense);
+      const updatedExpenses = expenses.map((expense) =>
+        expense.id === updatedExpense.id ? updatedExpense : expense
+      );
+      setExpenses(updatedExpenses);
+      // Handle successful expense update
+    } catch (error) {
+      console.error('Error updating expense:', error);
+      // Handle error
     }
   };
 
   return (
     <div>
+      <h2>Expense Tracker</h2>
+      <form onSubmit={handleCreateExpense}>
+        <input
+          type="text"
+          name="name"
+          placeholder="Expense Name"
+          value={newExpense.name}
+          onChange={(e) => setNewExpense({ ...newExpense, name: e.target.value })}
+          required
+        />
+        <input
+          type="number"
+          name="amount"
+          placeholder="Amount"
+          value={newExpense.amount}
+          onChange={(e) => setNewExpense({ ...newExpense, amount: parseFloat(e.target.value) })}
+          required
+        />
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={newExpense.category}
+          onChange={(e) => setNewExpense({ ...newExpense, category: e.target.value })}
+          required
+        />
+        <button type="submit">Add Expense</button>
+      </form>
       <ul>
         {expenses.map((expense) => (
           <li key={expense.id}>
-            <h3>{expense.name}</h3>
-            <p>Amount: {expense.amount}</p>
-            <button onClick={() => handleUpdateExpense(expense.id, { amount: expense.amount + 10 })}>
-              Increase Amount
-            </button>
+            {expense.name} - {expense.amount} ({expense.category})
             <button onClick={() => handleDeleteExpense(expense.id)}>Delete</button>
+            <button
+              onClick={() =>
+                handleUpdateExpense({ ...expense, amount: expense.amount + 100 })
+              }
+            >
+              Increase
+            </button>
           </li>
         ))}
       </ul>
-      <h3>Create New Expense</h3>
-      <input
-        type="text"
-        placeholder="Expense Name"
-        value={newExpenseName}
-        onChange={(e) => setNewExpenseName(e.target.value)}
-      />
-      <input
-        type="number"
-        placeholder="Expense Amount"
-        value={newExpenseAmount}
-        onChange={(e) => setNewExpenseAmount(parseFloat(e.target.value))}
-      />
-      <button onClick={handleCreateExpense}>Create Expense</button>
     </div>
   );
 };
