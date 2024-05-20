@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, logoutUser, registerUser } from '../services/auth.service';
-
 const AuthForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

@@ -1,31 +1,33 @@
 import axios from 'axios';
 
-const API_URL = '/api/reminders';
+const API_BASE_URL = 'http://localhost:5000/api'; // Replace with your backend API URL
 
-const setReminder = async (reminderData) => {
+export const getReminders = async (userId) => {
   try {
-    const response = await axios.post(`${API_URL}`, reminderData);
+    const response = await axios.get(`${API_BASE_URL}/users/${userId}/reminders`);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    console.error('Error fetching reminders:', error);
+    throw error;
   }
 };
 
-const getReminders = async () => {
+export const setReminder = async (userId, reminderData) => {
   try {
-    const response = await axios.get(`${API_URL}`);
+    const response = await axios.post(`${API_BASE_URL}/users/${userId}/reminders`, reminderData);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    console.error('Error setting reminder:', error);
+    throw error;
   }
 };
 
-const deleteReminder = async (reminderId) => {
+export const deleteReminder = async (userId, reminderId) => {
   try {
-    await axios.delete(`${API_URL}/${reminderId}`);
+    const response = await axios.delete(`${API_BASE_URL}/users/${userId}/reminders/${reminderId}`);
+    return response.data;
   } catch (error) {
-    throw error.response.data;
+    console.error('Error deleting reminder:', error);
+    throw error;
   }
 };
-
-export { setReminder, getReminders, deleteReminder };

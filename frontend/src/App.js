@@ -16,7 +16,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route>
           <Route path="home" index element={<Home />} />
           <Route path="budget" element={<ProtectedRoute><BudgetManagerPage /></ProtectedRoute>} />
           <Route path="expenses" element={<ProtectedRoute><ExpenseTrackerPage /></ProtectedRoute>} />
