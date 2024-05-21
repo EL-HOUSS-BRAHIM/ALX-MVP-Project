@@ -10,4 +10,3 @@ const devServerConfig = () => config => {
 module.exports = {
   devServer: overrideDevServer(devServerConfig())
 };
-
