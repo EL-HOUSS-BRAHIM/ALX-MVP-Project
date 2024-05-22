@@ -1,34 +1,30 @@
-import { Helmet } from "react-helmet";
-import "../styles/contact.css";
+import React from 'react';
 
-const Contact = () => {
+const Content = () => {
   return (
-    <div className="contact-container">
-      <Helmet>
-        <title>Budget Management App - Contact</title>
-        <meta
-          name="description"
-          content="Get in touch with us for support or inquiries."
-        />
-      </Helmet>
-      <h1>Contact Us</h1>
-      <form>
-        <label>
-          Name:
-          <input type="text" placeholder="Your name" />
-        </label>
-        <label>
-          Email:
-          <input type="email" placeholder="Your email" />
-        </label>
-        <label>
-          Message:
-          <textarea placeholder="Your message"></textarea>
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <main className="content">
+      <div id="home" className="active">
+        <h2>Welcome to Your Dashboard</h2>
+        <p>This is your personal finance management dashboard.</p>
+      </div>
+      <div id="budget" className="hidden">
+        <h2>Budget Manager</h2>
+        {/* Add your Budget Manager content here */}
+      </div>
+      <div id="expenses" className="hidden">
+        <h2>Expense Tracker</h2>
+        {/* Add your Expense Tracker content here */}
+      </div>
+      <div id="reminders" className="hidden">
+        <h2>Reminder Manager</h2>
+        {/* Add your Reminder Manager content here */}
+      </div>
+      <div id="profile" className="hidden">
+        <h2>User Profile</h2>
+        {/* Add your User Profile content here */}
+      </div>
+    </main>
   );
 };
 
-export default Contact;
+export default Content;

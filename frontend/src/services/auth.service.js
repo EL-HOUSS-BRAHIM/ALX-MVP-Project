@@ -13,7 +13,7 @@ const registerUser = async (userData) => {
 
 const loginUser = async (credentials) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, credentials);
+    const response = await axios.post(`${API_URL}`, credentials);
     return response.data;
   } catch (error) {
     throw error.response.data;
