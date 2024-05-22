@@ -1,23 +1,26 @@
-/* Header styles */
+/* Header Styles */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-  }
-  
-  .header .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .header nav ul {
-    display: flex;
-    list-style: none;
-  }
-  
-  .header nav ul li {
-    margin-left: 20px;
-  }
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.header nav {
+  margin-top: 10px;
+}
+
+.header nav a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+  font-size: 18px;
+}
+
+.header nav a:hover {
+  text-decoration: underline;
+}

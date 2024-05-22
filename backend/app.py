@@ -8,11 +8,12 @@ CORS(app)
 # Load your controllers and other modules here
 from controllers import Auth_contr, Budget_contr, Expense_contr, Reminder_contr, User_contr
 
+
 # Define your API routes
 @app.route('/api/v1/auth', methods=['POST'])
 def auth():
     # Handle authentication requests
-    return Auth_contr.handle_auth(request.json)
+    return Auth_contr.login_user(request.json)
 
 @app.route('/api/v1/users', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def users():

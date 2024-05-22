@@ -11,15 +11,14 @@ import Profile from './pages/Profile';
 import Contact from './pages/Contact';
 import NoPage from './pages/NoPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import DemoPage from './pages/DemoPage'; // Import the DemoPage component
+import './styles/app.css';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route>
-          <Route path="/" element={<Home />} />
-          <Route path="demo" element={<DemoPage />} /> {/* Add the DemoPage route */}
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
           <Route path="budget" element={<ProtectedRoute><BudgetManagerPage /></ProtectedRoute>} />
           <Route path="expenses" element={<ProtectedRoute><ExpenseTrackerPage /></ProtectedRoute>} />
           <Route path="reminders" element={<ProtectedRoute><ReminderManagerPage /></ProtectedRoute>} />

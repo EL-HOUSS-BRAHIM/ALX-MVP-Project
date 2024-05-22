@@ -1,49 +1,40 @@
-/* Budget manager styles */
-.budget-manager {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .budget-manager .set-budget {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .budget-manager .set-budget input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    margin-right: 10px;
-  }
-  
-  .budget-manager .set-budget button {
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  .budget-manager .budget-summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .budget-manager .budget-summary p {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  .budget-manager .budget-chart {
-    margin-top: 20px;
-  }
+/* Budget Styles */
+.set-budget,
+.budget-summary,
+.budget-chart {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.set-budget form,
+.budget-summary {
+  display: flex;
+  flex-direction: column;
+}
+
+.set-budget form input,
+.set-budget form button {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.set-budget form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.set-budget form button:hover {
+  background-color: #0056b3;
+}
+
+.budget-chart {
+  text-align: center;
+}

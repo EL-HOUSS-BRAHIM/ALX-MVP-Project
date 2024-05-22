@@ -1,105 +1,80 @@
+// components/ReminderManager.js
 import React, { useState, useEffect } from 'react';
-import { deleteReminder, getReminders, setReminder } from '../services/reminder.service';
+import api from '../utils/api';
 
 const ReminderManager = () => {
   const [reminders, setReminders] = useState([]);
-  const [newReminder, setNewReminder] = useState({
-    title: '',
-    description: '',
-    dueDate: '',
-  });
+  const [newReminder, setNewReminder] = useState({ title: '', description: '', dueDate: '' });
 
   useEffect(() => {
-    const fetchReminders = async () => {
-      try {
-        const reminderData = await getReminders();
-        setReminders(reminderData);
-      } catch (error) {
-        console.error('Error fetching reminders:', error);
-      }
-    };
-
     fetchReminders();
   }, []);
 
-  const handleCreateReminder = async (e) => {
-    e.preventDefault();
+  const fetchReminders = async () => {
     try {
-      await setReminder(newReminder);
+      const response = await api.get('/reminders');
+      setReminders(response.data);
+    } catch (error) {
+      console.error('Error fetching reminders:', error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setNewReminder({ ...newReminder, [e.target.name]: e.target.value });
+  };
+
+  const handleCreateReminder = async () => {
+    try {
+      await api.post('/reminders', newReminder);
       setNewReminder({ title: '', description: '', dueDate: '' });
-      // Handle successful reminder creation
+      fetchReminders();
     } catch (error) {
       console.error('Error creating reminder:', error);
-      // Handle error
     }
   };
 
   const handleDeleteReminder = async (reminderId) => {
     try {
-      await deleteReminder(reminderId);
-      const updatedReminders = reminders.filter((reminder) => reminder.id !== reminderId);
-      setReminders(updatedReminders);
-      // Handle successful reminder deletion
+      await api.delete(`/reminders/${reminderId}`);
+      fetchReminders();
     } catch (error) {
       console.error('Error deleting reminder:', error);
-      // Handle error
-    }
-  };
-
-  const handleUpdateReminder = async (updatedReminder) => {
-    try {
-      await setReminder(updatedReminder);
-      const updatedReminders = reminders.map((reminder) =>
-        reminder.id === updatedReminder.id ? updatedReminder : reminder
-      );
-      setReminders(updatedReminders);
-      // Handle successful reminder update
-    } catch (error) {
-      console.error('Error updating reminder:', error);
-      // Handle error
     }
   };
 
   return (
     <div>
-      <h2>Reminder Manager</h2>
-      <form onSubmit={handleCreateReminder}>
+      <div>
         <input
           type="text"
           name="title"
           placeholder="Title"
           value={newReminder.title}
-          onChange={(e) => setNewReminder({ ...newReminder, title: e.target.value })}
-          required
+          onChange={handleInputChange}
         />
         <input
           type="text"
           name="description"
           placeholder="Description"
           value={newReminder.description}
-          onChange={(e) => setNewReminder({ ...newReminder, description: e.target.value })}
-          required
+          onChange={handleInputChange}
         />
         <input
           type="date"
           name="dueDate"
           placeholder="Due Date"
           value={newReminder.dueDate}
-          onChange={(e) => setNewReminder({ ...newReminder, dueDate: e.target.value })}
-          required
+          onChange={handleInputChange}
         />
-        <button type="submit">Add Reminder</button>
-      </form>
+        <button onClick={handleCreateReminder}>Add Reminder</button>
+      </div>
       <ul>
         {reminders.map((reminder) => (
           <li key={reminder.id}>
-            <h3>{reminder.title}</h3>
-            <p>{reminder.description}</p>
-            <p>Due Date: {reminder.dueDate}</p>
+            <span>{reminder.title}</span>
+            <span>{reminder.description}</span>
+            <span>{reminder.dueDate}</span>
             <button onClick={() => handleDeleteReminder(reminder.id)}>Delete</button>
-            <button onClick={() => handleUpdateReminder({ ...reminder, description: `${reminder.description} (Updated)` })}>
-              Update
-            </button>
           </li>
         ))}
       </ul>

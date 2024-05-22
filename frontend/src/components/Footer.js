@@ -1,10 +1,10 @@
 import React from 'react';
+import '../styles/footer.css';
 
 const Footer = () => {
   return (
-    <footer>
-      <p>&copy; 2023 Your App Name. All rights reserved.</p>
-      {/* You can add more content or styling as needed */}
+    <footer className="footer">
+      <p>&copy; 2024 Budget Tracker. All rights reserved.</p>
     </footer>
   );
 };

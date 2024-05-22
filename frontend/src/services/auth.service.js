@@ -1,31 +1,23 @@
-import axios from 'axios';
+import api from '../utils/api';
 
-const API_URL = '/api/v1/auth';
+const authService = {
+  login: async (credentials) => {
+    const response = await api.post('/auth/login', credentials);
+    localStorage.setItem('user', JSON.stringify(response.data));
+  },
 
-const registerUser = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/register`, userData);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
+  register: async (credentials) => {
+    const response = await api.post('/auth/register', credentials);
+    localStorage.setItem('user', JSON.stringify(response.data));
+  },
+
+  logout: () => {
+    localStorage.removeItem('user');
+  },
+
+  isAuthenticated: () => {
+    return localStorage.getItem('user') !== null;
   }
 };
 
-const loginUser = async (credentials) => {
-  try {
-    const response = await axios.post(`${API_URL}`, credentials);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
-};
-
-const logoutUser = async () => {
-  try {
-    await axios.post(`${API_URL}/logout`);
-  } catch (error) {
-    throw error.response.data;
-  }
-};
-
-export { registerUser, loginUser, logoutUser };
+export default authService;

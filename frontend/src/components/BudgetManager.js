@@ -1,42 +1,82 @@
-import React, { useState } from 'react';
+// components/BudgetManager.js
+import React, { useState, useEffect } from 'react';
+import api from '../utils/api';
 
-const BudgetManager = ({ budgetData, onBudgetUpdate }) => {
-  const [totalBudget, setTotalBudget] = useState(budgetData.totalBudget);
-  const [categories, setCategories] = useState(budgetData.categories);
+const BudgetManager = () => {
+  const [budgets, setBudgets] = useState([]);
+  const [newBudget, setNewBudget] = useState({ category: '', amount: 0 });
 
-  const handleBudgetChange = (event) => {
-    setTotalBudget(parseFloat(event.target.value));
-    onBudgetUpdate({ ...budgetData, totalBudget: parseFloat(event.target.value) });
+  useEffect(() => {
+    fetchBudgets();
+  }, []);
+
+  const fetchBudgets = async () => {
+    try {
+      const response = await api.get('/budgets');
+      setBudgets(response.data);
+    } catch (error) {
+      console.error('Error fetching budgets:', error);
+    }
   };
 
-  const handleCategoryChange = (index, event) => {
-    const newCategories = [...categories];
-    newCategories[index].amount = parseFloat(event.target.value);
-    setCategories(newCategories);
-    onBudgetUpdate({ ...budgetData, categories: newCategories });
+  const handleInputChange = (e) => {
+    setNewBudget({ ...newBudget, [e.target.name]: e.target.value });
+  };
+
+  const handleCreateBudget = async () => {
+    try {
+      await api.post('/budgets', newBudget);
+      setNewBudget({ category: '', amount: 0 });
+      fetchBudgets();
+    } catch (error) {
+      console.error('Error creating budget:', error);
+    }
+  };
+
+  const handleUpdateBudget = async (budget) => {
+    try {
+      await api.put(`/budgets/${budget.id}`, budget);
+      fetchBudgets();
+    } catch (error) {
+      console.error('Error updating budget:', error);
+    }
+  };
+
+  const handleDeleteBudget = async (budgetId) => {
+    try {
+      await api.delete(`/budgets/${budgetId}`);
+      fetchBudgets();
+    } catch (error) {
+      console.error('Error deleting budget:', error);
+    }
   };
 
   return (
     <div>
-      <label htmlFor="totalBudget">Total Budget:</label>
-      <input
-        type="number"
-        id="totalBudget"
-        value={totalBudget}
-        onChange={handleBudgetChange}
-      />
-
-      <h3>Categories:</h3>
+      <div>
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={newBudget.category}
+          onChange={handleInputChange}
+        />
+        <input
+          type="number"
+          name="amount"
+          placeholder="Amount"
+          value={newBudget.amount}
+          onChange={handleInputChange}
+        />
+        <button onClick={handleCreateBudget}>Create Budget</button>
+      </div>
       <ul>
-        {categories.map((category, index) => (
-          <li key={index}>
-            <label htmlFor={`category-${index}`}>{category.name}:</label>
-            <input
-              type="number"
-              id={`category-${index}`}
-              value={category.amount}
-              onChange={(event) => handleCategoryChange(index, event)}
-            />
+        {budgets.map((budget) => (
+          <li key={budget.id}>
+            <span>{budget.category}</span>
+            <span>{budget.amount}</span>
+            <button onClick={() => handleUpdateBudget(budget)}>Update</button>
+            <button onClick={() => handleDeleteBudget(budget.id)}>Delete</button>
           </li>
         ))}
       </ul>

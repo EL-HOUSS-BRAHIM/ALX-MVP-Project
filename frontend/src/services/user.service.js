@@ -1,23 +1,10 @@
-import axios from 'axios';
+import api from '../utils/api';
 
-const API_URL = '/api/users';
-
-const getUserProfile = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/profile`);
+const userService = {
+  getProfile: async () => {
+    const response = await api.get('/user/profile');
     return response.data;
-  } catch (error) {
-    throw error.response.data;
   }
 };
 
-const updateUserProfile = async (userData) => {
-  try {
-    const response = await axios.put(`${API_URL}/profile`, userData);
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
-};
-
-export { getUserProfile, updateUserProfile };
+export default userService;

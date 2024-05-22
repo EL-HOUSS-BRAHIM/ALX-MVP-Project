@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, logoutUser, registerUser } from '../services/auth.service';
-const AuthForm = () => {
+import authService from '../services/auth.service';
+import '../styles/auth.css';
+
+const AuthForm = ({ type }) => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [isLogin, setIsLogin] = useState(true);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,24 +14,23 @@ const AuthForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
-      const response = await (isLogin ? loginUser(formData) : registerUser(formData));
-      // Handle successful authentication
-      navigate('/dashboard'); // Replace '/dashboard' with the desired route
-    } catch (error) {
-      console.error('Authentication error:', error);
-      // Handle authentication error
+      if (type === 'login') {
+        await authService.login(formData);
+      } else {
+        await authService.register(formData);
+      }
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Something went wrong. Please try again.');
     }
   };
 
-  const toggleAuthMode = () => {
-    setIsLogin(!isLogin);
-    setFormData({ email: '', password: '' });
-  };
-
   return (
-    <div>
-      <h2>{isLogin ? 'Login' : 'Register'}</h2>
+    <div className="auth-form">
+      <h2>{type === 'login' ? 'Login' : 'Register'}</h2>
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -50,11 +48,9 @@ const AuthForm = () => {
           onChange={handleChange}
           required
         />
-        <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
+        <button type="submit">{type === 'login' ? 'Login' : 'Register'}</button>
       </form>
-      <button onClick={toggleAuthMode}>
-        {isLogin ? 'Create an account' : 'Already have an account?'}
-      </button>
+      {error && <p className="error">{error}</p>}
     </div>
   );
 };

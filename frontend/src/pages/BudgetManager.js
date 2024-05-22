@@ -1,21 +1,17 @@
-import { Helmet } from "react-helmet";
-import BudgetManager from "../components/BudgetManager";
-import "../styles/budget.css";
+import React from 'react';
+import SetBudget from '../components/SetBudget';
+import BudgetSummary from '../components/BudgetSummary';
+import BudgetChart from '../components/BudgetChart';
+import '../styles/budget.css';
 
-const BudgetManagerPage = () => {
+const BudgetManager = () => {
   return (
-    <div className="budget-container">
-      <Helmet>
-        <title>Budget Management App - Budget Manager</title>
-        <meta
-          name="description"
-          content="Create and manage your budgets for different categories."
-        />
-      </Helmet>
-      <h1>Budget Manager</h1>
-      <BudgetManager />
+    <div className="budget-manager">
+      <SetBudget />
+      <BudgetSummary />
+      <BudgetChart />
     </div>
   );
 };
 
-export default BudgetManagerPage;
+export default BudgetManager;
