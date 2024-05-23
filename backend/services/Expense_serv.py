@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+from middleware.InpuValidat import InputValidator
+from models.Expense_Mod import ExpenseModel
 import sys
 import os
 
@@ -13,66 +15,94 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.connection import get_session
-from database.models import Expense, User
-from middleware import InputValidator
+
 
 class ExpenseService:
-    def __init__(self):
-        self.validator = InputValidator()
+    def add_expense(user_id, expense_data):
+        """
+            Add a new expense for a user.
 
-    def add_expense(self, user_id, expense_data):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "Invalid user ID"}
+            Args:
+                user_id (str): The ID of the user.
+                expense_data (dict): A dictionary containing expense information (e.g., amount, category, date).
 
-        if not self.validator.validate_expense_data(expense_data):
-            return {"error": "Invalid expense data"}
+            Returns:
+                dict: A dictionary containing a success message.
+        """
+        try:
+       # Validate the expense data
+            if not InputValidator.validate_expense_input(expense_data):
+                return {"success": False, "message": "Invalid expense data."}
 
-        expense = Expense(
-            user=user,
-            category=expense_data["category"],
-            amount=expense_data["amount"],
-            description=expense_data.get("description"),
-        )
-        session.add(expense)
-        session.commit()
+       # Save the expense data to the database
+            expense_model = ExpenseModel()
+            expense_id = expense_model._save(user_id, expense_data)
 
-        return {"message": "Expense added successfully", "expense_id": expense.id}
+            return {"success": True, "message": "Expense added successfully.", "expense_id": expense_id}
+        except Exception as e:
+            return {"success": False, "message": f"Error adding expense: {str(e)}"}
 
-    def get_expenses(self, user_id):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "Invalid user ID"}
+    def get_expenses(user_id):
+        """
+        Get a list of expenses for a user.
 
-        expenses = user.expenses
-        return [expense.to_dict() for expense in expenses]
+        Args:
+            user_id (str): The ID of the user.
 
-    def update_expense(self, user_id, expense_id, updated_data):
-        session = get_session()
-        expense = session.query(Expense).filter_by(id=expense_id, user_id=user_id).first()
-        if not expense:
-            return {"error": "Expense not found"}
+        Returns:
+            list: A list of dictionaries representing the user's expenses.
+        """
+        try:
+       # Retrieve the user's expenses from the database
+            expense_model = ExpenseModel()
+            expenses = expense_model._get_all(user_id)
 
-        if not self.validator.validate_expense_data(updated_data):
-            return {"error": "Invalid expense data"}
+            return expenses
+        except Exception as e:
+            return {"success": False, "message": f"Error getting expenses: {str(e)}"}
 
-        expense.category = updated_data["category"]
-        expense.amount = updated_data["amount"]
-        expense.description = updated_data.get("description")
-        session.commit()
+    def update_expense(user_id, expense_id, update_data):
+        """
+        Update an existing expense for a user.
 
-        return {"message": "Expense updated successfully"}
+        Args:
+            user_id (str): The ID of the user.
+            expense_id (str): The ID of the expense.
+            update_data (dict): A dictionary containing the updated expense information.
 
-    def delete_expense(self, user_id, expense_id):
-        session = get_session()
-        expense = session.query(Expense).filter_by(id=expense_id, user_id=user_id).first()
-        if not expense:
-            return {"error": "Expense not found"}
+        Returns:
+            dict: A dictionary containing a success message.
+        """
+        try:
+       # Validate the updated expense data
+            if not InputValidator.validate_expense_input(update_data):
+                return {"success": False, "message": "Invalid expense data."}
 
-        session.delete(expense)
-        session.commit()
+       # Update the expense in the database
+            expense_model = ExpenseModel()
+            expense_model._update_details(user_id, expense_id, update_data)
 
-        return {"message": "Expense deleted successfully"}
+            return {"success": True, "message": "Expense updated successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error updating expense: {str(e)}"}
+
+    def delete_expense(user_id, expense_id):
+        """
+        Delete an expense for a user.
+
+
+        Args:
+            user_id (str): The ID of the user.
+            expense_id (str): The ID of the expense.
+
+        Returns:
+            dict: A dictionary containing a success message.
+        """
+        try:
+       # Delete the expense from the database
+            expense_model = ExpenseModel()
+            expense_model._delete(user_id, expense_id)
+
+            return {"success": True, "message": "Expense deleted successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error deleting expense: {str(e)}"}

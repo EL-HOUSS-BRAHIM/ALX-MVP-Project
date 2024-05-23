@@ -2,18 +2,24 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import json
 
+
 app = Flask(__name__)
 CORS(app)
 
 # Load your controllers and other modules here
-from controllers import Auth_contr, Budget_contr, Expense_contr, Reminder_contr, User_contr
+from controllers import AuthController, Budget_contr, Expense_contr, Reminder_contr, User_contr
 
 
 # Define your API routes
-@app.route('/api/v1/auth', methods=['POST'])
-def auth():
+@app.route('/api/v1/auth/login', methods=['POST'])
+def auth_login():
     # Handle authentication requests
-    return Auth_contr.login_user(request.json)
+    return AuthController.login_user(request)
+
+@app.route('/api/v1/auth/register', methods=['POST'])
+def auth_register():
+    # Handle authentication requests
+    return AuthController.register_user(request)
 
 @app.route('/api/v1/users', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def users():

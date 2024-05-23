@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+from utils.JWT import checkJWTExpiration
+from datetime import datetime
+import re
 import sys
 import os
 
@@ -10,12 +13,11 @@ sys.path.append(parent_dir)
 # Convert sys.path to a set to remove duplicates, then convert it back to a list
 unique_sys_path = list(set(sys.path))
 
+
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-import re
-from datetime import datetime
-from utils.JWT import checkJWTExpiration
+
 
 class Promise:
     def __init__(self, executor):
@@ -57,6 +59,8 @@ class Promise:
     @staticmethod
     def reject(error):
         return Promise(lambda _, reject: reject(error))
+
+
 class InputValidator:
     def validate_user_input(self, credentials):
         if 'email' not in credentials or 'password' not in credentials:
@@ -96,11 +100,11 @@ class InputValidator:
 
         return True, "Valid expense input."
 
-    def validate_budget_input(self, budget_data):
+    def validate_budget_input(budget_data):
         """
-        Validate budget input data such as amount, category, period, etc.
-        based on defined rules (e.g., amount should be a number, valid date range, etc.).
-        """
+    Validate budget input data such as amount, category, period, etc.
+    based on defined rules (e.g., amount should be a number, valid date range, etc.).
+    """
         amount = budget_data.get("amount")
         category = budget_data.get("category")
         start_date = budget_data.get("start_date")

@@ -13,20 +13,20 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
+
 from services.Auth_serv import AuthService
 from middleware.InpuValidat import InputValidator
 
-
-
 auth_service = AuthService()
 input_validator = InputValidator()
+
 
 class AuthController:
     def register_user(request):
         """
         Register a new user.
         """
-        user_data = request.get_json()
+        user_data = request.json  # Use request.json directly
 
         is_valid, message = input_validator.validate_user_input(user_data)
         if not is_valid:
@@ -42,7 +42,7 @@ class AuthController:
         """
         Authenticate and log in a user.
         """
-        credentials = request.get_json()
+        credentials = request.json  # Use request.json directly
 
         is_valid, message = input_validator.validate_user_input(credentials)
         if not is_valid:

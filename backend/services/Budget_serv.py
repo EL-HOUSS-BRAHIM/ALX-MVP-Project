@@ -1,9 +1,13 @@
 #!/usr/bin/python3
-import sys
 import os
+import sys
+
+from middleware.InpuValidat import InputValidator
+from models.Budget_Mod import BudgetModel
 
 # Get the absolute path of the parent directory
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
 
 # Add the parent directory to sys.path
 sys.path.append(parent_dir)
@@ -13,69 +17,98 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.connection import get_session
-from database.models import Budget, User
-from middleware import InputValidator
+
 
 class BudgetService:
-    def __init__(self):
-        self.validator = InputValidator()
+    def set_budget(user_id, budget_data):
+        """
+        Set a budget for a user.
 
-    def set_budget(self, user_id, budget_data):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "Invalid user ID"}
+        Args:
+            user_id (str): The ID of the user.
+            budget_data (dict): A dictionary containing budget information (e.g., amount, category, period).
 
-        if not self.validator.validate_budget_data(budget_data):
-            return {"error": "Invalid budget data"}
+        Returns:
+            dict: A dictionary containing a success message.
+        """
 
-        budget = Budget(
-            user=user,
-            amount=budget_data["amount"],
-            category=budget_data["category"],
-            start_date=budget_data["start_date"],
-            end_date=budget_data["end_date"],
-        )
-        session.add(budget)
-        session.commit()
+        try:
+            # Validate the budget data
+            if not InputValidator.validate_budget_input(budget_data):
+                return {"success": False, "message": "Invalid budget data."}
 
-        return {"message": "Budget set successfully"}
+        # Save the budget data to the database
+            budget_model = BudgetModel()
+            budget_model._save(user_id, budget_data)
 
-    def get_budget_summary(self, user_id):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "Invalid user ID"}
+            return {"success": True, "message": "Budget set successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error setting budget: {str(e)}"}
 
-        budgets = user.budgets
-        budget_summary = [budget.to_dict() for budget in budgets]
-        return budget_summary
+    def get_budget_summary(user_id):
+        """
+        Get a summary of the user's budget.
 
-    def update_budget(self, user_id, updated_data):
-        session = get_session()
-        budget = session.query(Budget).filter_by(user_id=user_id).first()
-        if not budget:
-            return {"error": "Budget not found"}
+        Args:
+            user_id (str): The ID of the user.
 
-        if not self.validator.validate_budget_data(updated_data):
-            return {"error": "Invalid budget data"}
+        Returns:
+            dict: A dictionary containing the user's budget summary.
+        """
+        try:
+        # Retrieve the user's budget summary from the database
+            budget_model = BudgetModel()
+            budget_summary = budget_model._get_summary(user_id)
 
-        budget.amount = updated_data["amount"]
-        budget.category = updated_data["category"]
-        budget.start_date = updated_data["start_date"]
-        budget.end_date = updated_data["end_date"]
-        session.commit()
+            if budget_summary:
+                return budget_summary
+            else:
+                return {"success": False, "message": "Budget not found."}
+        except Exception as e:
+            return {"success": False, "message": f"Error getting budget summary: {str(e)}"}
 
-        return {"message": "Budget updated successfully"}
 
-    def delete_budget(self, user_id):
-        session = get_session()
-        budget = session.query(Budget).filter_by(user_id=user_id).first()
-        if not budget:
-            return {"error": "Budget not found"}
+    def update_budget(user_id, budget_data):
+        """
+        Update the user's budget.
 
-        session.delete(budget)
-        session.commit()
+        Args:
+            user_id (str): The ID of the user.
+            budget_data (dict): A dictionary containing the updated budget information.
 
-        return {"message": "Budget deleted successfully"}
+        Returns:
+            dict: A dictionary containing a success message.
+        """
+        try:
+        # Validate the updated budget data
+            if not InputValidator.validate_budget_input(budget_data):
+                return {"success": False, "message": "Invalid budget data."}
+
+        # Update the budget in the database
+            budget_model = BudgetModel()
+            budget_model._update(user_id, budget_data)
+
+            return {"success": True, "message": "Budget updated successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error updating budget: {str(e)}"}
+
+
+    def delete_budget(user_id):
+        """
+        Delete the user's budget.
+
+        Args:
+            user_id (str): The ID of the user.
+
+        Returns:
+            dict: A dictionary containing a success message.
+        """
+        try:
+        # Delete the budget from the database
+            budget_model = BudgetModel()
+            budget_model._delete(user_id)
+
+            return {"success": True, "message": "Budget deleted successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error deleting budget: {str(e)}"}
+            return {"success": False, "message": f"Error deleting budget: {str(e)}"}

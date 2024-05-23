@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+from middleware.InpuValidat import InputValidator
+from models.Reminder_Mod import ReminderModel
 import sys
 import os
 
@@ -13,50 +15,75 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.connection import get_session
-from database.models import Reminder, User
-from middleware import InputValidator
+
 
 class ReminderService:
-    def __init__(self):
-        self.validator = InputValidator()
 
-    def set_reminder(self, user_id, reminder_data):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "Invalid user ID"}
 
-        if not self.validator.validate_reminder_data(reminder_data):
-            return {"error": "Invalid reminder data"}
+    def set_reminder(user_id, reminder_data):
+        """
+    Set a reminder for a user.
 
-        reminder = Reminder(
-            user=user,
-            title=reminder_data["title"],
-            description=reminder_data.get("description"),
-            due_date=reminder_data["due_date"],
-        )
-        session.add(reminder)
-        session.commit()
+    Args:
+        user_id (str): The ID of the user.
+        reminder_data (dict): A dictionary containing reminder information (e.g., title, description, due_date).
 
-        return {"message": "Reminder set successfully", "reminder_id": reminder.id}
+    Returns:
+        dict: A dictionary containing a success message.
+    """
+        try:
+        # Validate the reminder data
+            if not InputValidator.validate_reminder_input(reminder_data):
+                return {"success": False, "message": "Invalid reminder data."}
 
-    def get_reminders(self, user_id):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "Invalid user ID"}
+        # Save the reminder data to the database
+            reminder_model = ReminderModel()
+            reminder_id = reminder_model._save(user_id, reminder_data)
 
-        reminders = user.reminders
-        return [reminder.to_dict() for reminder in reminders]
+            return {"success": True, "message": "Reminder set successfully.", "reminder_id": reminder_id}
+        except Exception as e:
+            return {"success": False, "message": f"Error setting reminder: {str(e)}"}
 
-    def delete_reminder(self, user_id, reminder_id):
-        session = get_session()
-        reminder = session.query(Reminder).filter_by(id=reminder_id, user_id=user_id).first()
-        if not reminder:
-            return {"error": "Reminder not found"}
 
-        session.delete(reminder)
-        session.commit()
+    def get_reminders(user_id):
+        """
+    Get a list of reminders for a user.
 
-        return {"message": "Reminder deleted successfully"}
+    Args:
+        user_id (str): The ID of the user.
+
+    Returns:
+        list: A list of dictionaries representing the user's reminders.
+    """
+        try:
+        # Retrieve the user's reminders from the database
+            reminder_model = ReminderModel()
+            reminders = reminder_model._get_all(user_id)
+
+            return reminders
+        except Exception as e:
+            return {"success": False, "message": f"Error getting reminders: {str(e)}"}
+
+# services/ReminderService.py (continued)
+
+
+    def delete_reminder(user_id, reminder_id):
+        """
+    Delete a reminder for a user.
+
+
+    Args:
+        user_id (str): The ID of the user.
+        reminder_id (str): The ID of the reminder.
+
+    Returns:
+        dict: A dictionary containing a success message.
+    """
+        try:
+        # Delete the reminder from the database
+            reminder_model = ReminderModel()
+            reminder_model._delete(user_id, reminder_id)
+
+            return {"success": True, "message": "Reminder deleted successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error deleting reminder: {str(e)}"}

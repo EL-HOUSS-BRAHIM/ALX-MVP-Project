@@ -13,54 +13,90 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.connection import get_session
-from database.models import User
-from middleware import InputValidator, Promise
-
+from models.User_Mod import UserModel
+from middleware.InpuValidat import InputValidator
 class UserService:
-    def __init__(self):
-        self.validator = InputValidator()
+    def get_user_profile(user_id):
+        """
+        Get a user's profile information.
 
-    def get_user_profile(self, user_id):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "User not found"}
+        Args:
+            user_id (str): The ID of the user.
 
-        return user.to_dict()
+        Returns:
+            dict: A dictionary containing the user's profile information.
+        """
+        try:
+        # Retrieve the user's profile from the database
+            user_model = UserModel()
+            user_profile = user_model._get_profile(user_id)
 
-    def update_user_profile(self, user_id, profile_data):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "User not found"}
+            if user_profile:
+                return user_profile
+            else:
+                return {"success": False, "message": "User not found."}
+        except Exception as e:
+            return {"success": False, "message": f"Error getting user profile: {str(e)}"}
 
-        if not self.validator.validate_user_profile(profile_data):
-            return {"error": "Invalid profile data"}
+    def update_user_profile(user_id, update_data):
+        """
+    Update a user's profile information.
 
-        user.username = profile_data.get("username", user.username)
-        session.commit()
+    Args:
+        user_id (str): The ID of the user.
+        update_data (dict): A dictionary containing the updated profile information.
 
-        return {"message": "User profile updated successfully"}
+    Returns:
+        dict: A dictionary containing a success message.
+    """
+        try:
+        # Validate the updated user data
+            if not InputValidator.validate_user_input(update_data):
+                return {"success": False, "message": "Invalid user data."}
 
-    def delete_user(self, user_id):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return {"error": "User not found"}
+        # Update the user's profile in the database
+            user_model = UserModel()
+            user_model._update_profile(user_id, update_data)
 
-        session.delete(user)
-        session.commit()
+            return {"success": True, "message": "User profile updated successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error updating user profile: {str(e)}"}
 
-        return {"message": "User account deleted successfully"}
+    def delete_user(user_id):
+        """
+    Delete a user account.
 
-    def track_login_attempts(self, user_id):
-        session = get_session()
-        user = session.query(User).filter_by(id=user_id).first()
-        if not user:
-            return Promise.reject("Invalid user ID")
+    Args:
+        user_id (str): The ID of the user.
 
-        user.login_attempts += 1
-        session.commit()
+    Returns:
+        dict: A dictionary containing a success message.
+    """
+        try:
+        # Delete the user from the database
+            user_model = UserModel()
+            user_model._delete(user_id)
 
-        return Promise.resolve(user.login_attempts)
+            return {"success": True, "message": "User deleted successfully."}
+        except Exception as e:
+            return {"success": False, "message": f"Error deleting user: {str(e)}"}
+
+    def track_login_attempts(user_id):
+        """
+    Track the number of login attempts for a user.
+
+
+    Args:
+        user_id (str): The ID of the user.
+
+    Returns:
+        dict: A dictionary containing the login attempt count and a success message.
+    """
+        try:
+        # Retrieve the login attempt count from the database (not implemented here)
+        # ...
+            login_attempts = 3
+
+            return {"success": True, "login_attempts": login_attempts}
+        except Exception as e:
+            return {"success": False, "message": f"Error tracking login attempts: {str(e)}"}
