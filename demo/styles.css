@@ -1,0 +1,349 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #333;
+  color: white;
+  padding: 1rem 0;
+}
+/* Reset and General Styles */
+/* ... */
+
+/* Header */
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  height: 40px;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+nav ul li {
+  margin-left: 1rem;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* Hero Section */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f5f5f5;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.cta-btn {
+  background-color: #333;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Features Section */
+.features {
+  padding: 2rem;
+  text-align: center;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #f5f5f5;
+  padding: 2rem;
+  margin: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+}
+
+.card i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Reset and General Styles */
+/* ... */
+
+/* Header */
+/* ... */
+
+/* Hero Section */
+/* ... */
+
+/* Features Section */
+/* ... */
+
+/* Expenses Section */
+.expenses {
+  padding: 2rem;
+  text-align: center;
+}
+
+.add-expense-btn {
+  background-color: #333;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.expense-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.expense-item {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  text-align: left;
+  position: relative;
+}
+
+.expense-item h3 {
+  margin-top: 0;
+}
+
+.expense-item button {
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.expense-item .edit-form {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.expense-item .edit-form input,
+.expense-item .edit-form select {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.expense-item .edit-form button {
+  margin-right: 0;
+}
+
+/* Budgets Section */
+.budgets {
+  padding: 2rem;
+  text-align: center;
+}
+
+.add-budget-btn {
+  background-color: #333;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.budget-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.budget-item {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  text-align: left;
+}
+
+.budget-item h3 {
+  margin-top: 0;
+}
+
+.budget-item button {
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+/* Reminders Section */
+.reminders {
+  padding: 2rem;
+  text-align: center;
+}
+
+.add-reminder-btn {
+  background-color: #333;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.reminder-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.reminder-item {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  text-align: left;
+}
+
+.reminder-item h3 {
+  margin-top: 0;
+}
+
+.reminder-item button {
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+/* Contact Section */
+.contact {
+  padding: 2rem;
+  background-color: #f5f5f5;
+  text-align: center;
+}
+
+.contact form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.contact input,
+.contact textarea {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.contact button {
+  background-color: #333;
+  color: #fff;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* Footer */
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .hero {
+      flex-direction: column;
+  }
+
+  .hero-content {
+      text-align: center;
+      margin-bottom: 2rem;
+  }
+
+  .feature-cards {
+      flex-direction: column;
+      align-items: center;
+  }
+}
