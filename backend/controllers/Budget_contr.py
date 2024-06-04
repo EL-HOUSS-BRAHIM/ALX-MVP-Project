@@ -73,3 +73,15 @@ class BudgetController:
         """
         user_id = request.get("user_id")
         return self.service.delete_budget(user_id)
+    def archive_budget(self, request):
+        """
+        Archive an existing budget.
+
+        Args:
+            request (dict): The request data containing the user ID.
+
+        Returns:
+            dict: A success or error message.
+        """
+        user_id = request.get("user_id")
+        return self.service.archive_budget(user_id)

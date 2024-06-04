@@ -60,3 +60,16 @@ class ReminderController:
         user_id = request.get("user_id")
         reminder_id = request.get("reminder_id")
         return self.service.delete_reminder(user_id, reminder_id)
+    def archive_reminder(self, request):
+        """
+        Archive an existing reminder.
+
+        Args:
+            request (dict): The request data containing the user ID and reminder ID.
+
+        Returns:
+            dict: A success or error message.
+        """
+        user_id = request.get("user_id")
+        reminder_id = request.get("reminder_id")
+        return self.service.archive_reminder(user_id, reminder_id)

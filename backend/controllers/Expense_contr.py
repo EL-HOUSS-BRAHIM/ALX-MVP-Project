@@ -75,3 +75,16 @@ class ExpenseController:
         user_id = request.get("user_id")
         expense_id = request.get("expense_id")
         return self.service.delete_expense(user_id, expense_id)
+    def archive_expense(self, request):
+        """
+        Archive an existing expense.
+
+        Args:
+            request (dict): The request data containing the user ID and expense ID.
+
+        Returns:
+            dict: A success or error message.
+        """
+        user_id = request.get("user_id")
+        expense_id = request.get("expense_id")
+        return self.service.archive_expense(user_id, expense_id)
