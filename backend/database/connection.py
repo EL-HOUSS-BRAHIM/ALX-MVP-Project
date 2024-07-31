@@ -2,10 +2,10 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 # MySQL connection details
-DB_HOST = "phpadmin.brahim-crafts.tech"  # Use the subdomain or the main domain where MySQL is accessible
-DB_NAME = "project"
-DB_USER = "bross"
-DB_PASS = "A78BE9D10s?"
+DB_HOST = "sql10.freemysqlhosting.net"  # Use the subdomain or the main domain where MySQL is accessible
+DB_NAME = "sql10721737"
+DB_USER = "sql10721737"
+DB_PASS = "2ZaDJRTfjt"
 PORT = 3306  # Default MySQL port is 3306
 
 # Create SQLAlchemy engine with echo enabled

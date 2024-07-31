@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import sys
 import os
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from database.init_db import Base
 
 # Get the absolute path of the parent directory
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -13,11 +15,17 @@ unique_sys_path = list(set(sys.path))
 # Print the unique entries in sys.path
 for path in unique_sys_path:
     print(path)
-from database.models import Budget
+from database.models import Budget, User
 
 class BudgetModel:
     def __init__(self, session):
         self.session = session
+    __tablename__ = 'budgets'
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    category = Column(String)
+    amount = Column(Float)
 
     def _save(self, user_id, budget_data):
         user = self.session.query(User).filter_by(id=user_id).first()

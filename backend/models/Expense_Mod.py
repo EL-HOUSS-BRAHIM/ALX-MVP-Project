@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 import sys
 import os
-
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from database.init_db import Base
+from database.models import Budget, User
 # Get the absolute path of the parent directory
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -18,6 +20,13 @@ from database.models import Expense
 class ExpenseModel:
     def __init__(self, session):
         self.session = session
+    __tablename__ = 'expenses'
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    description = Column(String)
+    amount = Column(Float)
+    date = Column(String)
 
     def _save(self, user_id, expense_data):
         user = self.session.query(User).filter_by(id=user_id).first()

@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import sys
 import os
+from sqlalchemy import Column, Integer, String
+from database.init_db import Base
 
 # Get the absolute path of the parent directory
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -18,6 +20,12 @@ from database.models import User
 class UserModel:
     def __init__(self, session):
         self.session = session
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String)
+    name = Column(String)
 
     def _save(self, user_data):
         email = user_data.get("email")

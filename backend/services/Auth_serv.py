@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from models.User_Mod import UserModel
+from database.init_db import SessionLocal
 import datetime
 import jwt
 import bcrypt
@@ -25,6 +26,9 @@ JWT_EXPIRATION_TIME = 3600  # 1 hour
 
 
 class AuthService:
+    def __init__(self):
+        self.session = SessionLocal()
+
     def create_user(self, user_data):
         """
         Create a new user account.
@@ -36,23 +40,19 @@ class AuthService:
             dict: A dictionary containing the user's information and a success message.
         """
         try:
-            # Hash the password using bcrypt
             hashed_password = bcrypt.hashpw(
-                user_data["password"].encode("utf-8"), bcrypt.gensalt()
-            )
-            user_data["password"] = hashed_password.decode("utf-8")
-
-            # Save the user data to the database
-            user_model = UserModel()
-            user_id = user_model._save(user_data)
-
-            return {
-                "success": True,
-                "message": "User created successfully.",
-                "user_id": user_id,
-            }
+                user_data['password'].encode('utf-8'), bcrypt.gensalt())
+            user_data['password'] = hashed_password.decode('utf-8')
+            new_user = UserModel(
+                email=user_data['email'], password=user_data['password'], name=user_data['name'])
+            self.session.add(new_user)
+            self.session.commit()
+            return {"success": True, "message": "User created successfully.", "user_id": new_user.id}
         except Exception as e:
+            self.session.rollback()
             return {"success": False, "message": f"Error creating user: {str(e)}"}
+        finally:
+            self.session.close()
 
     def authenticate_user(email, password):
         """
@@ -92,11 +92,12 @@ class AuthService:
         except Exception as e:
             return {"success": False, "message": f"Error authenticating user: {str(e)}"}
 
-    def generate_jwt(payload, expires_in=JWT_EXPIRATION_TIME):
+    def generate_jwt(self, payload, expires_in=JWT_EXPIRATION_TIME):
         """
         Generate a JSON Web Token (JWT).
 
         Args:
+            self: The instance of the class.
             payload (dict): The payload to be encoded in the JWT.
             expires_in (int, optional): The expiration time of the JWT in seconds. Default is JWT_EXPIRATION_TIME.
 
@@ -113,7 +114,7 @@ class AuthService:
         except Exception as e:
             raise Exception(f"Error generating JWT: {str(e)}")
 
-    def refresh_jwt(token):
+    def refresh_jwt(self, token):
         """
         Refresh a JSON Web Token (JWT).
 
@@ -130,7 +131,7 @@ class AuthService:
                                  algorithms=[JWT_ALGORITHM])
 
             # Generate a new JWT token with a new expiration time
-            new_token = generate_jwt(payload)
+            new_token = self.generate_jwt(payload)
 
             return {"success": True, "token": new_token}
         except jwt.ExpiredSignatureError:
@@ -152,8 +153,9 @@ class AuthService:
         """
 
         try:
-        # Decode the JWT token
-            payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+            # Decode the JWT token
+            payload = jwt.decode(token, JWT_SECRET_KEY,
+                                 algorithms=[JWT_ALGORITHM])
 
         # Invalidate the token (e.g., store it in a blacklist or clear user session)
         # ...
